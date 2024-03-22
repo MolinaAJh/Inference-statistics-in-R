@@ -1,0 +1,121 @@
+## Categorical Inference in R 
+
+install.packages("tidyverse")
+library(tidyverse)
+
+install.packages("devtools")
+library(devtools)
+install.packages("usethis")
+library(usethis)
+
+install.packages("openintro")
+library(openintro)
+
+install.packages("dplyr")
+library(dplyr)
+install.packages("ggplot2")
+library(ggplot2)
+install.packages("shiny")
+library(shiny)
+install.packages("devtools")
+library(devtools)
+
+install_github("StatsWithR/statsr")
+library(StatsWithR/statsr)
+
+install.packages("tidyverse")
+library(tidyverse)
+
+install.packages("devtools")
+library(devtools)
+install.packages("usethis")
+library(usethis)
+
+install.packages("openintro")
+library(openintro)
+
+install.packages("dplyr")
+library(dplyr)
+install.packages("ggplot2")
+library(ggplot2)
+install.packages("shiny")
+library(shiny)
+install.packages("devtools")
+library(devtools)
+
+install_github("StatsWithR/statsr")
+library(StatsWithR/statsr)
+
+library(statsr)
+library(dplyr)
+
+
+data(atheism)
+us12 <- atheism %>%
+  filter(nationality == "United States" , atheism$year == "2012")
+View(us12)
+
+us12 <- subset(atheism, atheism$nationality == "United States" & atheism$year == "2012")
+sum(us12$response == 'atheist') / length(us12$response)
+
+table(us12$response)
+
+inference(y = response, data = us12, statistic = "proportion", type = "ci", method = "theoretical", success = "atheist")
+
+## Alternative
+
+n = length(us12$response)
+prop = sum(us12$response == 'atheist')  / n
+prop
+
+se = sqrt(prop * (1 - prop) / n)
+se
+
+lower = prop - 1.96 * se
+upper = prop + 1.96 * se
+c(lower, upper)
+upper - lower
+
+## Exercise: Using the inference function, calculate confidence intervals for the proportion of atheists in 2012 in two other countries of your choice, and report the associated margins of error. Be sure to note whether the conditions for inference are met. It may be helpful to create new data sets for each of the two countries first, and then use these data sets in the inference function to construct the confidence intervals.
+
+india = subset(atheism, atheism$nationality == "India" & atheism$year == "2012")
+inference(y = response, data = india, statistic = "proportion", type = "ci", method = "theoretical", success = "atheist")
+
+Afghanistan = subset(atheism, atheism$nationality == "Afghanistan" & atheism$year == "2012")
+inference(y = response, data = india, statistic = "proportion", type = "ci", method = "theoretical", success = "atheist")
+
+## How does the proportion affect the margin of error?
+d <- data.frame(p <- seq(0, 1, 0.01))
+n <- 1000
+d <- d %>%
+  mutate(me = 1.96*sqrt(p*(1 - p)/n))
+ggplot(d, aes(x = p, y = me)) +
+  geom_line()
+
+## True / False: There is convincing evidence that Spain has seen a change in its atheism index between 2005 and 2012.
+
+spain = subset(atheism, atheism$nationality == "Spain")
+proportion = sum(spain$response == 'atheist')  / length(spain$response)
+
+inference( y= response, x = year, data = spain, statistic = "proportion", type = "ci", method = "theoretical", success = "atheist")
+
+us = subset(atheism, atheism$nationality == "United States")
+proportion = sum(us$response == 'atheist')  / length(us$response)
+inference(response, year, data=us, statistic = "proportion", type = "ci", method = "theoretical", success = "atheist")
+
+## Suppose you’re hired by the local government to estimate the proportion of residents that attend a religious service on a weekly basis. According to the guidelines, the estimate must have a margin of error no greater than 1% with 95% confidence. You have no idea what to expect for p. How many people would you have to sample to ensure that you are within the guidelines?
+
+# type your code for Question 13 here, and Knit
+
+ME <- 0.01
+
+# The most conservative ME happens with p = 50%
+p <- 0.5
+
+# ME <-  1.96 * SE for 95% confidence margin
+# SE <-  sqrt(p*(1 - p)/n)
+# ME <-  1.96 * sqrt(p*(1 - p)/n)
+# ME^2 <-  1.96^2 * p*(1 - p)/n
+# n <-  1.96^2 * p*(1 - p)/ME^2
+
+1.96^2 * p *(1 - 0.5)/ME^2

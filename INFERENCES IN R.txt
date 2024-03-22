@@ -1,0 +1,33 @@
+install.packages("devtools")
+library(devtools)
+install.packages("usethis")
+library(usethis)
+
+
+install.packages("dplyr")
+library(dplyr)
+install.packages("ggplot2")
+library(ggplot2)
+install.packages("shiny")
+library(shiny)
+
+
+download.file("http://www.openintro.org/stat/data/nc.RData", destfile = "nc.RData")
+load("nc.RData")
+
+summary(nc)
+
+inference(y = nc$weight, x = nc$habit, est = "mean", type = "ht", null = 0, 
+          alternative = "twosided", method = "theoretical")
+
+inference(y = nc$weight, x = nc$habit, est = "mean", type = "ci", null = 0, 
+          alternative = "twosided", method = "theoretical", 
+          order = c("smoker","nonsmoker"))
+
+inference(y = nc$weeks, est = "mean", type = "ci", null = 0, 
+          alternative = "twosided", method = "theoretical", 
+          order = c("smoker","nonsmoker"), conflevel = 0.99)
+summary(nc)
+
+inference(y = nc$weeks,  est = "mean", type = "ci", null = 0, 
+          alternative = "twosided", method = "theoretical", conflevel = 0.99)
